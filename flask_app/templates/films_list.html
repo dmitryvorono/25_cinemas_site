@@ -26,9 +26,18 @@
       </div>
     </nav>
 
-    <div class="container">
-      <p>There Will Be Films</p>
-    </div><!-- /.container -->
+    <div class="b-container container">
+      {% for film in films %}
+      <div class="b-film">
+        <div class="b-film__title">{{ film.title }}</div>
+        <div class="b-film__cinemas">{{ film.count_cinema }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="b-container container">
+      <div class="b-footer">Настоящий сайт создан в исключительно учебных целях. Все сведения о фильмах взяты с сайтов Афиша и Кинопоиск.</div>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
