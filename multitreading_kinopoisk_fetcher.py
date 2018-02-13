@@ -48,7 +48,7 @@ def start_fetcher(film, proxy, headers):
     url = 'https://www.kinopoisk.ru/index.php?first=yes&what=&kp_query={0}'.format(film['title'])
     raw_kinopoisk_html = try_fetch_by_proxy(url, proxy, headers)
     if is_captcha_html(raw_kinopoisk_html):
-        return film
+        raw_kinopoisk_html = None
     film.update(parse_movie_info(raw_kinopoisk_html))
 
 
