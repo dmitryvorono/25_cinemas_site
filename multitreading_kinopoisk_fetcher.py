@@ -6,7 +6,7 @@ import itertools
 import json
 import requests
 from bs4 import BeautifulSoup
-count_fetchers = 5
+count_fetchers = 10
 
 
 def try_fetch_by_proxy(url, proxy, headers):
@@ -37,11 +37,12 @@ def get_html_text(html_tree, tag, attrs):
 
 def parse_movie_info(raw_html):
     if raw_html is None:
-        return {'rating': '0.0', 'count_votes': '0.0'}
+        return {'rating': '0.0', 'count_votes': '0.0', 'image': ''}
     movie_info_tree = BeautifulSoup(raw_html, 'html.parser')
     rating = get_html_text(movie_info_tree, 'span', {'class': 'rating_ball'})
     count_votes = get_html_text(movie_info_tree, 'span', {'class': 'ratingCount'})
-    return {'rating': rating, 'count_votes': count_votes}
+    image = movie_info_tree.find('a', {'class': 'popupBigImage'}).find('img').attrs['src']
+    return {'rating': rating, 'count_votes': count_votes, 'image': image}
 
 
 def start_fetcher(film, proxy, headers):

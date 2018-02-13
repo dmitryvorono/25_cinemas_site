@@ -28,7 +28,7 @@ def sorted_movies(movies):
 def output_movies_to_console(movies):
     output_movies = sorted_movies(movies)
     for m in output_movies:
-        print('{0} {1}'.format(m['title'], m['rating']))
+        print('{0} {1} {2}'.format(m['title'], m['rating'], m['image']))
 
 
 def create_parser():
