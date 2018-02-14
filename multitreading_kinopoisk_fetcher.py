@@ -6,13 +6,13 @@ import itertools
 import json
 import requests
 from bs4 import BeautifulSoup
-count_fetchers = 10
+count_fetchers = 1
 
 
-def try_fetch_by_proxy(url, proxy, headers):
+def try_fetch_by_proxy(url, cycle_proxy, cycle_fake_headers):
     session = requests.session()
-    session.headers.update(headers)
-    session.proxies.update(proxy)
+    session.headers.update(next(cycle_fake_headers))
+    session.proxies.update({'https': next(cycle_proxy)})
     try:
         request = session.get(url, timeout=10)
     except:
@@ -45,20 +45,20 @@ def parse_movie_info(raw_html):
     return {'rating': rating, 'count_votes': count_votes, 'image': image}
 
 
-def start_fetcher(film, proxy, headers):
+def start_fetcher(film, cycle_proxy, cycle_fake_headers):
     url = 'https://www.kinopoisk.ru/index.php?first=yes&what=&kp_query={0}'.format(film['title'])
-    raw_kinopoisk_html = try_fetch_by_proxy(url, proxy, headers)
+    raw_kinopoisk_html = try_fetch_by_proxy(url, cycle_proxy, cycle_fake_headers)
     if is_captcha_html(raw_kinopoisk_html):
         raw_kinopoisk_html = None
     film.update(parse_movie_info(raw_kinopoisk_html))
 
 
-def start_worker(queue_unprocessed_films, proxy, headers):
+def start_worker(queue_unprocessed_films, cycle_proxy, cycle_fake_headers):
     while True:
         film = queue_unprocessed_films.get()
         if film is None:
             break
-        start_fetcher(film, proxy, headers)
+        start_fetcher(film, cycle_proxy, cycle_fake_headers)
         queue_unprocessed_films.task_done()
 
 
@@ -88,8 +88,8 @@ def fetch_raiting_films_in_kinopoisk(films):
     cycle_fake_headers = itertools.cycle(load_fake_headers('fake_headers.txt'))
     film_fetchers = [threading.Thread(target=start_worker,
                                       args=(queue_unprocessed_films,
-                                            {'https': next(cycle_proxy)},
-                                            next(cycle_fake_headers)))
+                                            cycle_proxy,
+                                            cycle_fake_headers))
                      for i in range(count_fetchers)]
     for film_fetcher in film_fetchers:
         film_fetcher.start()
