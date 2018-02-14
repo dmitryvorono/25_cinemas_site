@@ -6,29 +6,43 @@ import cinemas
 import multitreading_kinopoisk_fetcher
 
 
-
 @app.route('/')
 @cache.cached(timeout=5000)
 def films_list():
     afisha_raw_html = cinemas.fetch_afisha_page()
     films = cinemas.parse_afisha_list(afisha_raw_html)
     films = sorted(films, key=lambda f: f['count_cinema'], reverse=True)[:10]
-    films = multitreading_kinopoisk_fetcher.fetch_raiting_films_in_kinopoisk(films)
-    save_fetched_films(films)
-    return render_template('films_list.html', films=films)
+    fetched_films = []
+    films_need_kinopoins_fetch = []
+    for film in films:
+        saved_film = get_saved_film(film)
+        if saved_film:
+            fetched_films.append(saved_film)
+        else:
+            films_need_kinopoins_fetch.append(film)
+    films_need_kinopoins_fetch = multitreading_kinopoisk_fetcher.fetch_raiting_films_in_kinopoisk(films_need_kinopoins_fetch)
+    new_fetched_films = save_fetched_films(films_need_kinopoins_fetch)
+    return render_template('films_list.html', films=fetched_films + new_fetched_films)
+
+
+def get_saved_film(film):
+    film_in_database = db.session.query(models.Film)
+    film_in_database = film_in_database.filter(models.Film.title == film['title'])
+    if film_in_database.count() == 0:
+        return None
+    return film_in_database.first()
 
 
 def save_fetched_films(films):
+    saved_films = []
     for film in films:
         if film['rating'] == '0.0':
             continue
-        film_in_database = db.session.query(models.Film)
-        film_in_database = film_in_database.filter(models.Film.title == film['title'])
-        if film_in_database.count() > 0:
-            continue
         new_film = create_film(film)
         db.session.add(new_film)
+        saved_films.append(new_film)
     db.session.commit()
+    return saved_films
 
 
 def create_film(film):
