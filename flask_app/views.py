@@ -1,7 +1,6 @@
 from flask_app.flask_server import app, cache, db
 from flask_app import models
 from flask import render_template
-import time
 import cinemas
 import multitreading_kinopoisk_fetcher
 from config import TIME_OUT_CACHE, COUNT_FILMS_ON_PAGE
