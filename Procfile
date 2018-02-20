@@ -1,2 +1,3 @@
 web: gunicorn run-heroku:app
-init: python db_create.py && db_migrate.py
+init: python db_create.py
+upgrade: python db_migrate.py
