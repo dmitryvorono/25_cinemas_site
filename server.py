@@ -1,6 +1,6 @@
 from flask_app.flask_server import app
 import os
-from config import site_ip_address, site_port
+from config import SITE_IP_ADDRESS, SITE_PORT
 
-app.run(host=os.getenv('IP', site_ip_address),
-        port=int(os.getenv('PORT', site_port)))
+app.run(host=os.getenv('IP', SITE_IP_ADDRESS),
+        port=int(os.getenv('PORT', SITE_PORT)))
