@@ -7,3 +7,5 @@ site_port = 8080
 DEBUG = True
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, os.environ['FLASK_DB_FILENAME'])
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+TIME_OUT_CACHE = 5000
+COUNT_FILMS_ON_PAGE = 12

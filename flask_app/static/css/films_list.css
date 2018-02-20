@@ -1,3 +1,23 @@
 .b-film_boarded{
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 }
+.b-film_margined{
+    margin: 50px;
+}
+.b-image_centered{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.b-film__rating_centered,.b-film__cinemas_centered{
+    text-align: center;
+}
+.b-row__content_float {
+    float: left;
+}
+
+@media only screen and (max-width: 500px) {
+    .b-row__content_float {
+        float: none;
+    }
+}

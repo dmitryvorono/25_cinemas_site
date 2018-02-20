@@ -27,20 +27,24 @@
     </nav>
 
     <div class="b-container container">
-      {% for film in films %}
-      <div class="b-film b-film_boarded">
-        <div class="b-film__image">
-          <img class="b-image" src="{{  film.image  }}">
-        </div>
-        <div class="b-film__title">{{ film.title }}</div>
-        <div class="b-film__rating">{{  film.rating  }}</div>
-        <div class="b-film__cinemas">{{ film.count_cinema }}</div>
+      <div class="b-row row">
+        {% for film in films %}
+          <div class="b-row__content b-row__content_float">
+            <div class="b-film b-film_boarded b-film_margined">
+              <div class="b-film__image">
+                <img class="b-image b-image_centered" src="{{  film.image  }}" alt="{{ film.title }}" width="200" height="300">
+              </div>
+              <div class="b-film__rating b-film__rating_centered">Рейтинг: {{  film.rating  }}</div>
+              <div class="b-film__cinemas b-film__cinemas_centered">Количество кинотеатров: {{ film.count_cinema }}</div>
+            </div>
+          </div>
+        {% endfor %}          
       </div>
-      {% endfor %}
+
     </div>
     
     <div class="b-container container">
-      <div class="b-footer">Настоящий сайт создан в исключительно учебных целях. Все сведения о фильмах взяты с сайтов Афиша и Кинопоиск.</div>
+      <div class="b-footer">Настоящий сайт создан в исключительно учебных целях. Все сведения о фильмах взяты с сайтов <a href="www.afisha.ru">Афиша</a> и <a href="www.kinopoisk.ru">Кинопоиск</a>.</div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

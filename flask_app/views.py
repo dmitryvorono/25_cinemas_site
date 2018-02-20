@@ -4,14 +4,15 @@ from flask import render_template
 import time
 import cinemas
 import multitreading_kinopoisk_fetcher
+from config import TIME_OUT_CACHE, COUNT_FILMS_ON_PAGE
 
 
 @app.route('/')
-@cache.cached(timeout=5000)
+@cache.cached(timeout=TIME_OUT_CACHE)
 def films_list():
     afisha_raw_html = cinemas.fetch_afisha_page()
     films = cinemas.parse_afisha_list(afisha_raw_html)
-    films = sorted(films, key=lambda f: f['count_cinema'], reverse=True)[:10]
+    films = sorted(films, key=lambda f: f['count_cinema'], reverse=True)[:COUNT_FILMS_ON_PAGE]
     fetched_films = []
     films_need_kinopoins_fetch = []
     for film in films:
@@ -20,6 +21,7 @@ def films_list():
             fetched_films.append(saved_film)
         else:
             films_need_kinopoins_fetch.append(film)
+    print(films_need_kinopoins_fetch)
     films_need_kinopoins_fetch = multitreading_kinopoisk_fetcher.fetch_raiting_films_in_kinopoisk(films_need_kinopoins_fetch)
     new_fetched_films = save_fetched_films(films_need_kinopoins_fetch)
     return render_template('films_list.html', films=fetched_films + new_fetched_films)
