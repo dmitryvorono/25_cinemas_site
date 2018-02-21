@@ -15,7 +15,10 @@ def try_fetch_by_proxy(url, cycle_proxy, cycle_fake_headers):
     session.proxies.update({'https': next(cycle_proxy)})
     try:
         request = session.get(url, timeout=10)
-    except:
+    except Exception as inst:
+        print(type(inst))
+        print(inst.args)
+        print(inst)
         return None
     if request.status_code == requests.codes.ok:
         return request.text
