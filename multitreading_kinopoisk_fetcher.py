@@ -9,12 +9,12 @@ from bs4 import BeautifulSoup
 from config import COUNT_FETCHERS
 
 
-def try_fetch_by_proxy(url, cycle_proxy, cycle_fake_headers):
+def try_fetch_by_proxy(url, payload, cycle_proxy, cycle_fake_headers):
     session = requests.session()
     session.headers.update(next(cycle_fake_headers))
     session.proxies.update({'https': next(cycle_proxy)})
     try:
-        request = session.get(url, timeout=10)
+        request = session.get(url, params=payload, timeout=10)
     except Exception as inst:
         print(type(inst))
         print(inst.args)
@@ -53,8 +53,10 @@ def parse_movie_info(raw_html):
 
 
 def start_fetcher(film, cycle_proxy, cycle_fake_headers):
-    url = 'https://www.kinopoisk.ru/index.php?first=yes&what=&kp_query={0}'.format(film['title'])
+    payload = {'first': 'yes', 'what': '', 'kp_query': film['title']}
+    url = 'https://www.kinopoisk.ru/index.php'
     raw_kinopoisk_html = try_fetch_by_proxy(url,
+                                            payload,
                                             cycle_proxy,
                                             cycle_fake_headers)
     if is_captcha_html(raw_kinopoisk_html):
