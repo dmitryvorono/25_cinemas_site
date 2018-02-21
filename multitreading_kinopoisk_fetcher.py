@@ -101,13 +101,13 @@ def fetch_raiting_films_in_kinopoisk(films):
                                       args=(queue_unprocessed_films,
                                             cycle_proxy,
                                             cycle_fake_headers))
-                     for i in range(COUNT_FETCHERS)]
+                     for index_fetcher in range(COUNT_FETCHERS)]
     for film_fetcher in film_fetchers:
         film_fetcher.start()
-    for item in films:
-        queue_unprocessed_films.put(item)
+    for film in films:
+        queue_unprocessed_films.put(film)
     queue_unprocessed_films.join()
-    for i in range(COUNT_FETCHERS):
+    for index_fetcher in range(COUNT_FETCHERS):
         queue_unprocessed_films.put(None)
     for film_fetcher in film_fetchers:
         film_fetcher.join()

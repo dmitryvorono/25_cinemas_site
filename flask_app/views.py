@@ -11,7 +11,7 @@ from config import TIME_OUT_CACHE, COUNT_FILMS_ON_PAGE
 def films_list():
     afisha_raw_html = cinemas.fetch_afisha_page()
     films = cinemas.parse_afisha_list(afisha_raw_html)
-    films = sorted(films, key=lambda f: f['count_cinema'], reverse=True)
+    films = sorted(films, key=lambda film: film['count_cinema'], reverse=True)
     films = films[:COUNT_FILMS_ON_PAGE]
     fetched_films = []
     films_need_kinopoins_fetch = []
