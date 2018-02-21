@@ -2,8 +2,8 @@
 
 The project is written for show actual fims.
 
-This project is created for educational purposes only. All information about the films are taken from the sites [afisha.ru]("www.afisha.ru)
-and [kinopoisk.ru](www.kinopoisk.ru).
+This project is created for educational purposes only. All information about the films are taken from the sites [afisha.ru]("https://www.afisha.ru/)
+and [kinopoisk.ru](https://www.kinopoisk.ru/).
 
 [Open app](https://peaceful-fortress-17177.herokuapp.com/)
 
