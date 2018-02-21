@@ -14,7 +14,9 @@ def fetch_afisha_page():
 def parse_afisha_list(raw_html):
     afisha_html_tree = BeautifulSoup(raw_html, 'html.parser')
     film_elements = afisha_html_tree.find_all('div', {'class': 'object s-votes-hover-area collapsed'})
-    return [{'title': f.find('h3').text, 'count_cinema': len(f.find_all('tr'))} for f in film_elements]
+    return [{'title': f.find('h3').text,
+            'count_cinema': len(f.find_all('tr'))}
+            for f in film_elements]
 
 
 def filter_movies(movies, count_cinemas):
@@ -22,7 +24,9 @@ def filter_movies(movies, count_cinemas):
 
 
 def sorted_movies(movies):
-    return sorted(movies, key=lambda f: float(f['rating']) if f['rating'] is not None else 0, reverse=True)
+    return sorted(movies,
+                  key=lambda f: float(f['rating']) if f['rating'] is not None else 0,
+                  reverse=True)
 
 
 def output_movies_to_console(movies):

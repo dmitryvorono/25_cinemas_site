@@ -40,14 +40,20 @@ def parse_movie_info(raw_html):
         return {'rating': '0.0', 'count_votes': '0.0', 'image': ''}
     movie_info_tree = BeautifulSoup(raw_html, 'html.parser')
     rating = get_html_text(movie_info_tree, 'span', {'class': 'rating_ball'})
-    count_votes = get_html_text(movie_info_tree, 'span', {'class': 'ratingCount'})
-    image = movie_info_tree.find('a', {'class': 'popupBigImage'}).find('img').attrs['src']
+    count_votes = get_html_text(movie_info_tree,
+                                'span',
+                                {'class': 'ratingCount'})
+    image = (movie_info_tree.find('a', {'class': 'popupBigImage'})
+                            .find('img')
+                            .attrs['src'])
     return {'rating': rating, 'count_votes': count_votes, 'image': image}
 
 
 def start_fetcher(film, cycle_proxy, cycle_fake_headers):
     url = 'https://www.kinopoisk.ru/index.php?first=yes&what=&kp_query={0}'.format(film['title'])
-    raw_kinopoisk_html = try_fetch_by_proxy(url, cycle_proxy, cycle_fake_headers)
+    raw_kinopoisk_html = try_fetch_by_proxy(url,
+                                            cycle_proxy,
+                                            cycle_fake_headers)
     if is_captcha_html(raw_kinopoisk_html):
         raw_kinopoisk_html = None
     film.update(parse_movie_info(raw_kinopoisk_html))
