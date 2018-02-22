@@ -70,15 +70,16 @@ def start_worker(queue_unprocessed_films, cycle_proxy, cycle_fake_headers):
         queue_unprocessed_films.task_done()
 
 
-def load_proxies_list(filepath):
-    if not os.path.exists(filepath):
-        return None
-    with open(filepath, 'r') as proxies_file:
-        return proxies_file.read().split()
+def fetch_proxies_list():
+    free_proxy_url = 'http://www.freeproxy-list.ru/api/proxy'
+    free_proxy_payload = {'anonymity': False, 'token': 'demo'}
+    request = requests.get(free_proxy_url, params=free_proxy_payload)
+    if request.status_code == requests.codes.ok:
+        return request.content.decode('utf-8').splitlines()
 
 
-def get_cycle_proxies(filepath):
-    proxies_list = load_proxies_list(filepath)
+def get_cycle_proxies():
+    proxies_list = fetch_proxies_list()
     random.shuffle(proxies_list)
     return itertools.cycle(set(proxies_list))
 
@@ -92,7 +93,7 @@ def load_fake_headers(filepath):
 
 def fetch_raiting_films_in_kinopoisk(films):
     queue_unprocessed_films = queue.Queue()
-    cycle_proxy = get_cycle_proxies('proxies.txt')
+    cycle_proxy = get_cycle_proxies()
     cycle_fake_headers = itertools.cycle(load_fake_headers('fake_headers.txt'))
     film_fetchers = [threading.Thread(target=start_worker,
                                       args=(queue_unprocessed_films,
