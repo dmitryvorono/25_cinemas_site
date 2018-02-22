@@ -15,6 +15,7 @@ def films_list():
     films = films[:COUNT_FILMS_ON_PAGE]
     fetched_films = []
     films_need_kinopoins_fetch = []
+    delete_film_without_rating()
     for film in films:
         saved_film = get_saved_film(film)
         if saved_film:
@@ -22,9 +23,9 @@ def films_list():
         else:
             films_need_kinopoins_fetch.append(film)
     films_need_kinopoins_fetch = fetch_raiting_films_in_kinopoisk(films_need_kinopoins_fetch)
-    new_fetched_films = save_fetched_films(films_need_kinopoins_fetch)
+    saved_films = save_fetched_films(films_need_kinopoins_fetch)
     return render_template('films_list.html',
-                           films=fetched_films + new_fetched_films)
+                           films=fetched_films + saved_films)
 
 
 def get_saved_film(film):
@@ -45,6 +46,15 @@ def save_fetched_films(films):
         saved_films.append(new_film)
     db.session.commit()
     return saved_films
+
+
+def delete_film_without_rating():
+    query_films = db.session.query(Film).filter(Film.rating == None)
+    if query_films.count() == 0:
+        return 0
+    count_deleted_films = query_films.delete(synchronize_session=False)
+    db.session.commit()
+    return count_deleted_films
 
 
 def create_film(film):
